@@ -1,3 +1,4 @@
+import { ProductCategory } from 'src/common/interfaces/product-category.enum';
 import {
   Column,
   CreateDateColumn,
@@ -5,6 +6,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 @Entity({ name: 'products' })
 export class Product {
   @PrimaryGeneratedColumn('uuid', { name: 'product_id' })
@@ -22,7 +24,9 @@ export class Product {
   @Column({ type: 'float', scale: 2 })
   price: number;
 
-  @Column({ type: 'enum', nullable: false })
+  @Column({ type: 'enum', enum: ProductCategory, nullable: false })
+  category: ProductCategory;
+
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
 

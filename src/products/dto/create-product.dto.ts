@@ -1,3 +1,4 @@
+import { ProductCategory } from 'src/common/interfaces/product-category.enum';
 import z from 'zod/v4';
 
 export const createProductSchema = z.object(
@@ -38,6 +39,10 @@ export const createProductSchema = z.object(
     price: z
       .number('The price must be a number')
       .positive('The price must be a postive number'),
+    category: z.enum(
+      ProductCategory,
+      'The valid categories are guitar, bass guitar, drum, accessories',
+    ),
   },
   'Invalid input, the input must be a object',
 );

@@ -10,6 +10,9 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   Patch,
+  UseInterceptors,
+  UploadedFiles,
+  BadRequestException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import {
@@ -25,17 +28,55 @@ import {
   type PaginationDto,
   paginationSchema,
 } from 'src/common/dto/pagination.dto';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { v4 as uuid } from 'uuid';
+import path from 'path';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'mainImage', maxCount: 1 },
+        { name: 'gallery', maxCount: 4 },
+      ],
+      {
+        storage: diskStorage({
+          destination: './static/products',
+          filename: (req, file, cb) => {
+            const fileName = `${uuid()}${path.extname(file.originalname)}`;
+            cb(null, fileName);
+          },
+        }),
+      },
+    ),
+  )
   async create(
     @Res({ passthrough: true }) response: Response,
+    @UploadedFiles()
+    files: {
+      mainImage?: Express.Multer.File[];
+      gallery?: Express.Multer.File[];
+    },
     @Body(new ZodValidationPipe(createProductSchema))
     createProductDto: CreateProductDto,
   ) {
+    if (!files.mainImage || files.mainImage.length === 0) {
+      throw new BadRequestException({
+        ok: false,
+        message: ResponseMessageType.BAD_REQUEST,
+        error: 'Bad Request',
+      });
+    }
+
+    const mainImageName = files.mainImage[0].filename;
+    const galleryNames = files.gallery?.map((f) => f.filename) || [];
+    //TODO: CREATE PRODUCTIMAGE GUARDAR LAS IMAGENES EN DB TESTEAR AÑADIR VALIDACIONES
+    console.log({ mainImageName, galleryNames });
     const newProduct = await this.productsService.create(createProductDto);
 
     response.statusCode = 201;
