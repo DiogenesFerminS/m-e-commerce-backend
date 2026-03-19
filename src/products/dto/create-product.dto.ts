@@ -33,10 +33,10 @@ export const createProductSchema = z.object(
       .min(20, 'The product name must have 3 characters at least')
       .max(3000, 'The product name must have maximum of 3000 characters')
       .trim(),
-    stock: z
+    stock: z.coerce
       .number('The stock must be a number')
       .positive('The stock must be a postive number'),
-    price: z
+    price: z.coerce
       .number('The price must be a number')
       .positive('The price must be a postive number'),
     category: z.enum(

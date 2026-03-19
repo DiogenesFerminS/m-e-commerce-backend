@@ -4,8 +4,10 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ProductImage } from './productImage.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -26,6 +28,9 @@ export class Product {
 
   @Column({ type: 'enum', enum: ProductCategory, nullable: false })
   category: ProductCategory;
+
+  @OneToMany(() => ProductImage, (productImage) => productImage.product)
+  images: ProductImage[];
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;

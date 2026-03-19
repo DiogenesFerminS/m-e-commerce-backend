@@ -4,12 +4,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Envs, envsSchema } from './common/schemas/envs.schemas';
 import { Product } from './products/entities/product.entity';
+import { ProductImage } from './products/entities/productImage.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: envsSchema,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', './uploads'),
     }),
     ProductsModule,
     TypeOrmModule.forRootAsync({
@@ -22,7 +28,7 @@ import { Product } from './products/entities/product.entity';
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASS'),
         database: configService.get('POSTGRES_NAME'),
-        entities: [Product],
+        entities: [Product, ProductImage],
         synchronize: true,
       }),
     }),

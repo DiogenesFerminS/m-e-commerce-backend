@@ -13,6 +13,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   BadRequestException,
+  // BadRequestException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import {
@@ -29,9 +30,7 @@ import {
   paginationSchema,
 } from 'src/common/dto/pagination.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { v4 as uuid } from 'uuid';
-import path from 'path';
+import { multerConfig } from 'src/common/helpers/multer.config';
 
 @Controller('products')
 export class ProductsController {
@@ -44,15 +43,7 @@ export class ProductsController {
         { name: 'mainImage', maxCount: 1 },
         { name: 'gallery', maxCount: 4 },
       ],
-      {
-        storage: diskStorage({
-          destination: './static/products',
-          filename: (req, file, cb) => {
-            const fileName = `${uuid()}${path.extname(file.originalname)}`;
-            cb(null, fileName);
-          },
-        }),
-      },
+      multerConfig,
     ),
   )
   async create(
@@ -69,14 +60,14 @@ export class ProductsController {
       throw new BadRequestException({
         ok: false,
         message: ResponseMessageType.BAD_REQUEST,
-        error: 'Bad Request',
+        error: 'The mainImage es required',
       });
     }
 
     const mainImageName = files.mainImage[0].filename;
     const galleryNames = files.gallery?.map((f) => f.filename) || [];
     //TODO: CREATE PRODUCTIMAGE GUARDAR LAS IMAGENES EN DB TESTEAR AÑADIR VALIDACIONES
-    console.log({ mainImageName, galleryNames });
+    console.log({ mainImageName, galleryNames, files });
     const newProduct = await this.productsService.create(createProductDto);
 
     response.statusCode = 201;
