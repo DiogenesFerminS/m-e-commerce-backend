@@ -14,8 +14,8 @@ export const multerConfig: MulterOptions = {
       cb(
         new BadRequestException({
           ok: false,
-          message: ResponseMessageType.BAD_REQUEST,
-          error: 'Only image files are allowed!',
+          message: 'Only image files are allowed',
+          error: ResponseMessageType.BAD_REQUEST,
         }),
         false,
       );

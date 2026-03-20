@@ -41,7 +41,7 @@ export const createProductSchema = z.object(
       .positive('The price must be a postive number'),
     category: z.enum(
       ProductCategory,
-      'The valid categories are guitar, bass guitar, drum, accessories',
+      'Invalid category, the valid categories are guitar, bass guitar, drum, accessories',
     ),
   },
   'Invalid input, the input must be a object',

@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Product } from './product.entity';
 
 @Entity('product_image')
@@ -7,13 +13,14 @@ export class ProductImage {
   id: string;
 
   @Column({ type: 'text' })
-  fileName: string;
+  path: string;
 
   @Column({ default: false })
   isMain: boolean;
 
-  @ManyToMany(() => Product, (product) => product.images, {
+  @ManyToOne(() => Product, (product) => product.images, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'product_id' })
   product: Product;
 }

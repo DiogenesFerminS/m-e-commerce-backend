@@ -6,6 +6,7 @@ export const envsSchema = Joi.object({
   POSTGRES_NAME: Joi.string().required(),
   POSTGRES_HOST: Joi.string().required(),
   POSTGRES_PORT: Joi.number().port().default(8080),
+  API_URL: Joi.string(),
 });
 
 export interface Envs {
@@ -14,4 +15,5 @@ export interface Envs {
   POSTGRES_NAME: string;
   POSTGRES_HOST: string;
   POSTGRES_PORT: number;
+  API_URL: string;
 }
