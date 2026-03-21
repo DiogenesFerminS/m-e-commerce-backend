@@ -18,7 +18,7 @@ import {
 import { ProductsService } from './products.service';
 import {
   createProductSchema,
-  type UpdateProductDto,
+  // type UpdateProductDto,
   updateProductSchema,
 } from './dto';
 import { ZodValidationPipe } from 'src/common/pipes/zodValidation.pipe';
@@ -144,18 +144,64 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @UseFilters(MulterFilter)
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'mainImage', maxCount: 1 },
+        { name: 'gallery', maxCount: 4 },
+      ],
+      multerConfig,
+    ),
+  )
   async update(
+    @UploadedFiles()
+    files: {
+      mainImage?: Express.Multer.File[];
+      gallery?: Express.Multer.File[];
+    },
     @Param('id', ParseUUIDPipe) id: string,
-    @Body(new ZodValidationPipe(updateProductSchema))
-    updateProductDto: UpdateProductDto,
+    @Body() body: any,
   ) {
-    await this.productsService.update(id, updateProductDto);
-
-    return {
-      ok: true,
-      message: ResponseMessageType.UPDATED,
-      data: 'Product updated',
+    const cleanupFiles = () => {
+      if (files?.mainImage)
+        files.mainImage.forEach(
+          (f) => fs.existsSync(f.path) && fs.unlinkSync(f.path),
+        );
+      if (files?.gallery)
+        files.gallery.forEach(
+          (f) => fs.existsSync(f.path) && fs.unlinkSync(f.path),
+        );
     };
+
+    const result = updateProductSchema.safeParse(body);
+    if (!result.success) {
+      cleanupFiles();
+      const zodErrors = result.error.issues.map((err) => err.message);
+      throw new BadRequestException({
+        ok: false,
+        message: zodErrors.join(', '),
+        error: ResponseMessageType.BAD_REQUEST,
+      });
+    }
+    const mainImageName = files.mainImage ? files.mainImage[0].fieldname : null;
+    const galleryNames = files.gallery?.map((f) => f.filename) || [];
+
+    try {
+      const resp = await this.productsService.update(id, result.data, {
+        mainImageName,
+        galleryNames,
+      });
+
+      return {
+        ok: true,
+        message: ResponseMessageType.UPDATED,
+        data: resp,
+      };
+    } catch (error) {
+      cleanupFiles();
+      throw error as unknown;
+    }
   }
 
   @Delete(':id')

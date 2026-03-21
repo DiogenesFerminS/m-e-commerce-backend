@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -13,6 +14,7 @@ import { type UpdateProductDto, type CreateProductDto } from './dto';
 import { ProductImage } from './entities/productImage.entity';
 import { ConfigService } from '@nestjs/config';
 import { Envs } from 'src/common/schemas/envs.schemas';
+import { removeFileFromUrl } from 'src/common/helpers/remove-file';
 
 @Injectable()
 export class ProductsService {
@@ -97,17 +99,123 @@ export class ProductsService {
     return product;
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
-    try {
-      const updatedProduct = await this.productsRepository.update(
-        id,
-        updateProductDto,
-      );
+  async update(
+    id: string,
+    updateProductDto: UpdateProductDto,
+    {
+      mainImageName,
+      galleryNames,
+    }: { mainImageName: string | null; galleryNames: string[] },
+  ) {
+    const imagesToDeleteFromDisk: string[] = [];
 
-      return updatedProduct;
-    } catch (error) {
-      this.handlerError(error);
+    const { imagesToDelete, ...dataToUpdate } = updateProductDto;
+    const apiUrl = this.configService.get('API_URL') as string;
+
+    const oldProduct = await this.findOne(id);
+
+    if (!oldProduct) {
+      throw new BadRequestException({
+        ok: false,
+        error: ResponseMessageType.BAD_REQUEST,
+        message: 'Product not found',
+      });
     }
+
+    const currentMain = oldProduct.images.find((img) => img.isMain);
+
+    const isDeletingMain =
+      currentMain && imagesToDelete.includes(currentMain.id);
+
+    if (isDeletingMain && !mainImageName) {
+      throw new BadRequestException({
+        ok: false,
+        error: ResponseMessageType.BAD_REQUEST,
+        message:
+          'You cant delete the main image without uploading a new one to replace it.',
+      });
+    }
+
+    const currentGalleryCount = oldProduct.images.filter((img) => !img.isMain);
+    const newGalleryCount = galleryNames.length || 0;
+    const galleryImagesToDelete = oldProduct.images.filter(
+      (img) => !img.isMain && imagesToDelete.includes(img.id),
+    );
+
+    const totalCountGallery =
+      currentGalleryCount.length -
+      galleryImagesToDelete.length +
+      newGalleryCount;
+
+    if (totalCountGallery > 4) {
+      throw new BadRequestException({
+        ok: false,
+        error: ResponseMessageType.BAD_REQUEST,
+        message: 'The gallery must have maximum 4 images',
+      });
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      if (Object.keys(dataToUpdate).length > 0) {
+        await queryRunner.manager.update(Product, id, dataToUpdate);
+      }
+
+      let oldMainId: string | null = null;
+
+      if (mainImageName != null) {
+        const oldMain = oldProduct.images.find((image) => image.isMain);
+
+        if (oldMain) {
+          oldMainId = oldMain.id;
+          await queryRunner.manager.delete(ProductImage, oldMain.id);
+          imagesToDeleteFromDisk.push(oldMain.path);
+        }
+
+        await queryRunner.manager.save(ProductImage, {
+          path: `${apiUrl}${mainImageName}`,
+          isMain: true,
+          product: oldProduct,
+        });
+      }
+
+      if (imagesToDelete.length > 0) {
+        const imagesToRemove = oldProduct.images.filter(
+          (img) => imagesToDelete.includes(img.id) && img.id != oldMainId,
+        );
+
+        for (const img of imagesToRemove) {
+          await queryRunner.manager.delete(ProductImage, img.id);
+          imagesToDeleteFromDisk.push(img.path);
+        }
+      }
+
+      if (galleryNames.length > 0) {
+        const galleryEntities = galleryNames.map((name) => ({
+          path: `${apiUrl}${name}`,
+          isMain: false,
+          product: oldProduct,
+        }));
+        await queryRunner.manager.save(ProductImage, galleryEntities);
+      }
+
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException({
+        ok: false,
+        message: 'An unexpected error has ocurred to save data',
+        error: ResponseMessageType.INTERNAL_SERVER_ERROR,
+      });
+    } finally {
+      await queryRunner.release();
+    }
+
+    await removeFileFromUrl(imagesToDeleteFromDisk);
+    return 'Product Updated';
   }
 
   async remove(id: string) {
