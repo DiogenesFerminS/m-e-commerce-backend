@@ -17,8 +17,9 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import {
+  type CreateAttributeDto,
+  createAttributeSchema,
   createProductSchema,
-  // type UpdateProductDto,
   updateProductSchema,
 } from './dto';
 import { ZodValidationPipe } from 'src/common/pipes/zodValidation.pipe';
@@ -109,6 +110,27 @@ export class ProductsController {
       cleanupFiles();
       throw error as unknown;
     }
+  }
+
+  @Post(':id/attribute')
+  async createAttribute(
+    @Res({ passthrough: true }) response: Response,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body(new ZodValidationPipe(createAttributeSchema))
+    createAttributeDto: CreateAttributeDto,
+  ) {
+    const newAttribute = await this.productsService.createAttribute(
+      createAttributeDto,
+      id,
+    );
+
+    response.statusCode = 201;
+
+    return {
+      ok: true,
+      message: ResponseMessageType.CREATED,
+      data: newAttribute,
+    };
   }
 
   @Get()
@@ -212,6 +234,17 @@ export class ProductsController {
       ok: true,
       message: ResponseMessageType.SUCCESS,
       data: 'Product deleted',
+    };
+  }
+
+  @Delete(':id/attribute')
+  async removeAttribute(@Param('id', ParseUUIDPipe) id: string) {
+    const response = await this.productsService.deleteAttribute(id);
+
+    return {
+      ok: true,
+      message: ResponseMessageType.DELETED,
+      data: response,
     };
   }
 }

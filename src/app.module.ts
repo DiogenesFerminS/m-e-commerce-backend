@@ -7,6 +7,9 @@ import { Product } from './products/entities/product.entity';
 import { ProductImage } from './products/entities/productImage.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ProductAttribute } from './products/entities/productAttribute.entity';
+import { AuthModule } from './auth/auth.module';
+import { User } from './auth/entities/user.entity';
 
 @Module({
   imports: [
@@ -28,10 +31,11 @@ import { join } from 'path';
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASS'),
         database: configService.get('POSTGRES_NAME'),
-        entities: [Product, ProductImage],
+        entities: [Product, ProductImage, ProductAttribute, User],
         synchronize: true,
       }),
     }),
+    AuthModule,
   ],
 })
 export class AppModule {}

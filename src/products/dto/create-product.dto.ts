@@ -10,7 +10,7 @@ export const createProductSchema = z.object(
             return "The product name can't be empty";
           }
 
-          if (typeof iss.input != 'string') {
+          if (typeof iss.input !== 'string') {
             return 'The product name must be a string';
           }
         },

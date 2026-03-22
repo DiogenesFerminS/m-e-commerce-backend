@@ -10,11 +10,16 @@ import { Product } from './entities/product.entity';
 import { handleError } from 'src/common/helpers/handlers-errors';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ResponseMessageType } from 'src/common/interfaces/http.response';
-import { type UpdateProductDto, type CreateProductDto } from './dto';
+import {
+  type UpdateProductDto,
+  type CreateProductDto,
+  CreateAttributeDto,
+} from './dto';
 import { ProductImage } from './entities/productImage.entity';
 import { ConfigService } from '@nestjs/config';
 import { Envs } from 'src/common/schemas/envs.schemas';
 import { removeFileFromUrl } from 'src/common/helpers/remove-file';
+import { ProductAttribute } from './entities/productAttribute.entity';
 
 @Injectable()
 export class ProductsService {
@@ -22,7 +27,8 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
-    // private readonly productsImageRepository: Repository<ProductImage>,
+    @InjectRepository(ProductAttribute)
+    private readonly attributesRepository: Repository<ProductAttribute>,
     private readonly configService: ConfigService<Envs>,
     private dataSource: DataSource,
   ) {}
@@ -77,7 +83,7 @@ export class ProductsService {
 
     const [allProducts, productsCount] =
       await this.productsRepository.findAndCount({
-        relations: ['images'],
+        relations: ['images', 'attributes'],
         take: limit,
         skip: skip,
       });
@@ -94,7 +100,7 @@ export class ProductsService {
   async findOne(id: string) {
     const product = await this.productsRepository.findOne({
       where: { id },
-      relations: ['images'],
+      relations: ['images', 'attributes'],
     });
     return product;
   }
@@ -120,6 +126,24 @@ export class ProductsService {
         error: ResponseMessageType.BAD_REQUEST,
         message: 'Product not found',
       });
+    }
+
+    if (imagesToDelete.length > 0) {
+      const productImagesIds = oldProduct.images
+        .map((img) => (img.isMain ? null : img.id))
+        .filter((img) => img != null);
+
+      const areValidIds = imagesToDelete.every((id) =>
+        productImagesIds.includes(id),
+      );
+
+      if (!areValidIds) {
+        throw new BadRequestException({
+          ok: false,
+          error: ResponseMessageType.BAD_REQUEST,
+          message: 'Images ids invalid, images not found',
+        });
+      }
     }
 
     const currentMain = oldProduct.images.find((img) => img.isMain);
@@ -231,6 +255,54 @@ export class ProductsService {
 
     try {
       await this.productsRepository.softDelete(id);
+    } catch (error) {
+      this.handlerError(error);
+    }
+  }
+
+  async createAttribute(
+    createAttributeDto: CreateAttributeDto,
+    productId: string,
+  ) {
+    const product = await this.findOne(productId);
+    if (!product) {
+      throw new NotFoundException({
+        ok: false,
+        message: ResponseMessageType.NOT_FOUND,
+        error: 'Product not found',
+      });
+    }
+
+    const newAttribute = this.attributesRepository.create({
+      value: createAttributeDto.value.toLowerCase(),
+      name: createAttributeDto.name.toLowerCase(),
+      product: product,
+    });
+
+    try {
+      const savedAttribute = await this.attributesRepository.save(newAttribute);
+      return savedAttribute;
+    } catch (error: unknown) {
+      this.handlerError(error);
+    }
+  }
+
+  async deleteAttribute(attributeId: string) {
+    const attribute = await this.attributesRepository.findOne({
+      where: { id: attributeId },
+    });
+
+    if (!attribute) {
+      throw new BadRequestException({
+        ok: false,
+        message: ResponseMessageType.BAD_REQUEST,
+        error: 'Invalid id, attribute not found',
+      });
+    }
+
+    try {
+      await this.attributesRepository.delete(attributeId);
+      return 'Attribute deleted';
     } catch (error) {
       this.handlerError(error);
     }

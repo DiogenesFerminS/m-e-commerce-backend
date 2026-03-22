@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProductImage } from './productImage.entity';
+import { ProductAttribute } from './productAttribute.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -31,6 +32,12 @@ export class Product {
 
   @OneToMany(() => ProductImage, (productImage) => productImage.product)
   images: ProductImage[];
+
+  @OneToMany(
+    () => ProductAttribute,
+    (productAttribute) => productAttribute.product,
+  )
+  attributes: ProductAttribute[];
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;
