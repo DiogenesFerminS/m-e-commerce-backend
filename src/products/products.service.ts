@@ -20,6 +20,7 @@ import { ConfigService } from '@nestjs/config';
 import { Envs } from 'src/common/schemas/envs.schemas';
 import { removeFileFromUrl } from 'src/common/helpers/remove-file';
 import { ProductAttribute } from './entities/productAttribute.entity';
+import { isDatabaseError } from 'src/common/helpers/is-database-error';
 
 @Injectable()
 export class ProductsService {
@@ -65,12 +66,29 @@ export class ProductsService {
 
       await queryRunner.commitTransaction();
       return savedProduct;
-    } catch {
+    } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException({
+      if (isDatabaseError(error)) {
+        if (error.code === '23505') {
+          const match = error.detail?.match(/\((.*?)\)/);
+          const field = match ? match[1] : 'unknown field';
+          throw new BadRequestException({
+            ok: false,
+            error: ResponseMessageType.BAD_REQUEST,
+            message: `This ${field} already exists`,
+          });
+        }
+        throw new BadRequestException({
+          ok: false,
+          error: ResponseMessageType.BAD_REQUEST,
+          message: error.detail,
+        });
+      }
+
+      throw new BadRequestException({
         ok: false,
-        message: 'An unexpected error has ocurred to save data',
-        error: ResponseMessageType.INTERNAL_SERVER_ERROR,
+        error: ResponseMessageType.BAD_REQUEST,
+        message: error instanceof Error ? error.message : 'Unknown error',
       });
     } finally {
       await queryRunner.release();

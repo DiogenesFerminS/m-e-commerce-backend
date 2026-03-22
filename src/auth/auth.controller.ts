@@ -6,6 +6,8 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -16,6 +18,7 @@ import {
 } from './dto';
 import { ZodValidationPipe } from 'src/common/pipes/zodValidation.pipe';
 import { ResponseMessageType } from 'src/common/interfaces/http.response';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -45,9 +48,19 @@ export class AuthController {
     };
   }
 
+  @UseGuards(AuthGuard)
   @Get('user/:id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const user = await this.authService.findOne(id);
+
+    if (!user) {
+      throw new BadRequestException({
+        ok: true,
+        message: ResponseMessageType.BAD_REQUEST,
+        error: 'Invalid Id, user not found',
+      });
+    }
+
     return {
       ok: true,
       message: ResponseMessageType.SUCCESS,
