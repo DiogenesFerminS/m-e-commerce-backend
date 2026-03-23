@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -21,10 +22,14 @@ export class Product {
   @Column({ type: 'varchar', length: 3000, nullable: false })
   description: string;
 
+  @Index()
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  brand: string;
+
   @Column({ type: 'int' })
   stock: number;
 
-  @Column({ type: 'float', scale: 2 })
+  @Column({ type: 'numeric', scale: 2 })
   price: number;
 
   @Column({ type: 'enum', enum: ProductCategory, nullable: false })

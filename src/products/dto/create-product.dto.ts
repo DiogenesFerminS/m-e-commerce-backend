@@ -33,6 +33,21 @@ export const createProductSchema = z.object(
       .min(20, 'The product name must have 3 characters at least')
       .max(3000, 'The product name must have maximum of 3000 characters')
       .trim(),
+    brand: z
+      .string({
+        error: (iss) => {
+          if (iss.input === undefined) {
+            return 'The brand is required';
+          }
+
+          if (typeof iss.input !== 'string') {
+            return 'The brand must be a string';
+          }
+        },
+      })
+      .min(3, 'The brand must have 3 characters at least')
+      .max(255, 'The brand must have maximum 255 characters')
+      .trim(),
     stock: z.coerce
       .number('The stock must be a number')
       .positive('The stock must be a postive number'),
