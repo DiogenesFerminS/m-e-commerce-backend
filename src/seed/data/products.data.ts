@@ -172,7 +172,7 @@ export const SEED_PRODUCTS = [
     price: 849.0,
     category: ProductCategory.BASS,
     attributes: [
-      { name: 'type', vale: 'electric' },
+      { name: 'type', value: 'electric' },
       { name: 'pickups', value: 'split single-coil' },
       { name: 'strings', value: '4' },
     ],
@@ -192,7 +192,7 @@ export const SEED_PRODUCTS = [
     price: 2499.0,
     category: ProductCategory.BASS,
     attributes: [
-      { name: 'type', vale: 'electric' },
+      { name: 'type', value: 'electric' },
       { name: 'electronics', value: 'active 18V preamp' },
       { name: 'humbucker', value: 'neodymium' },
     ],
@@ -212,7 +212,7 @@ export const SEED_PRODUCTS = [
     price: 349.99,
     category: ProductCategory.BASS,
     attributes: [
-      { name: 'type', vale: 'electric' },
+      { name: 'type', value: 'electric' },
       { name: 'eq', value: '3-band power tap' },
       { name: 'body wood', value: 'nyangoh' },
     ],
@@ -232,7 +232,7 @@ export const SEED_PRODUCTS = [
     price: 479.0,
     category: ProductCategory.BASS,
     attributes: [
-      { name: 'type', vale: 'electric' },
+      { name: 'type', value: 'electric' },
       { name: 'pickups', value: 'fender-designed alnico' },
       { name: 'strings', value: '4' },
     ],
@@ -252,7 +252,7 @@ export const SEED_PRODUCTS = [
     price: 2150.0,
     category: ProductCategory.BASS,
     attributes: [
-      { name: 'type', vale: 'electric' },
+      { name: 'type', value: 'electric' },
       { name: 'Wood', value: 'Swamp Ash/Ovangkol' },
       { name: 'Strings', value: '5' },
     ],
@@ -272,7 +272,7 @@ export const SEED_PRODUCTS = [
     price: 399.0,
     category: ProductCategory.BASS,
     attributes: [
-      { name: 'type', vale: 'electric' },
+      { name: 'type', value: 'electric' },
       { name: 'controls', value: 'performance eq' },
       { name: 'pickups', value: 'ceramic dual-coil' },
     ],
@@ -292,7 +292,7 @@ export const SEED_PRODUCTS = [
     price: 420.0,
     category: ProductCategory.BASS,
     attributes: [
-      { name: 'type', vale: 'electric' },
+      { name: 'type', value: 'electric' },
       { name: 'body', value: 'hollow body' },
       { name: 'weight', value: 'ultra light' },
     ],
@@ -312,7 +312,7 @@ export const SEED_PRODUCTS = [
     price: 2450.0,
     category: ProductCategory.BASS,
     attributes: [
-      { name: 'type', vale: 'electric' },
+      { name: 'type', value: 'electric' },
       { name: 'output', value: 'stereo rick-o-sound' },
       { name: 'wood', value: 'maple' },
     ],
@@ -334,7 +334,7 @@ export const SEED_PRODUCTS = [
     price: 899.0,
     category: ProductCategory.DRUM,
     attributes: [
-      { name: 'type', vale: 'acoustic' },
+      { name: 'type', value: 'acoustic' },
       { name: 'pieces', value: '5' },
       { name: 'hardware', value: '830 Series' },
     ],
@@ -354,7 +354,7 @@ export const SEED_PRODUCTS = [
     price: 749.0,
     category: ProductCategory.DRUM,
     attributes: [
-      { name: 'type', vale: 'acoustic' },
+      { name: 'type', value: 'acoustic' },
       { name: 'heads', value: 'tama original' },
       { name: 'hoops', value: 'accu-tune' },
     ],
@@ -374,7 +374,7 @@ export const SEED_PRODUCTS = [
     price: 1850.0,
     category: ProductCategory.DRUM,
     attributes: [
-      { name: 'type', vale: 'acoustic' },
+      { name: 'type', value: 'acoustic' },
       { name: 'shell material', value: 'north american maple' },
       { name: 'pieces', value: '4 (shell pack)' },
     ],

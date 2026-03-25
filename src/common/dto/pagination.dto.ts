@@ -1,6 +1,13 @@
 import z from 'zod/v4';
+import { ProductCategory } from '../interfaces/product-category.enum';
 
 export const paginationSchema = z.object({
+  category: z
+    .enum(
+      ProductCategory,
+      'Invalid category, the valid categories are guitar, bass guitar, drum, accessories',
+    )
+    .optional(),
   page: z.coerce
     .number()
     .int({ message: 'page must be a positive number' })

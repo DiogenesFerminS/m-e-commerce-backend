@@ -138,7 +138,10 @@ export class ProductsController {
     @Query(new ZodValidationPipe(paginationSchema))
     paginationDto: PaginationDto,
   ) {
-    const allProducts = await this.productsService.findAll(paginationDto);
+    const allProducts = await this.productsService.findAll(
+      paginationDto,
+      paginationDto.category,
+    );
     return {
       ok: true,
       message: ResponseMessageType.OK,

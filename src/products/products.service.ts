@@ -95,20 +95,27 @@ export class ProductsService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto, category: string | undefined) {
     const { limit, page } = paginationDto;
     const skip = (page - 1) * limit;
 
-    const [allProducts, productsCount] =
-      await this.productsRepository.findAndCount({
-        relations: ['images', 'attributes'],
-        take: limit,
-        skip: skip,
-      });
+    const queryBuilder = this.productsRepository
+      .createQueryBuilder('products')
+      .leftJoinAndSelect('products.images', 'images')
+      .leftJoinAndSelect('products.attributes', 'attributes');
+
+    if (category) {
+      queryBuilder.andWhere('products.category = :category', { category });
+    }
+
+    queryBuilder.take(limit).skip(skip).orderBy('products.createdAt', 'DESC');
+
+    const [products, total] = await queryBuilder.getManyAndCount();
+
     return {
-      products: allProducts,
+      products: products,
       meta: {
-        total: productsCount,
+        total: total,
         page: page,
         limit: limit,
       },
