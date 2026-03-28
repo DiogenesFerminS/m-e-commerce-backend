@@ -18,7 +18,7 @@ import {
 import { ProductImage } from './entities/productImage.entity';
 import { ConfigService } from '@nestjs/config';
 import { Envs } from 'src/common/schemas/envs.schemas';
-import { removeFileFromUrl } from 'src/common/helpers/remove-file';
+import { removeFilesFromNames } from 'src/common/helpers/remove-file';
 import { ProductAttribute } from './entities/productAttribute.entity';
 import { isDatabaseError } from 'src/common/helpers/is-database-error';
 
@@ -37,7 +37,6 @@ export class ProductsService {
     createProductDto: CreateProductDto,
     { mainImage, gallery }: { mainImage: string; gallery: string[] },
   ) {
-    const apiUrl = this.configService.get('API_URL') as string;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -48,14 +47,14 @@ export class ProductsService {
 
       const imagesToSave = [
         queryRunner.manager.create(ProductImage, {
-          path: `${apiUrl}${mainImage}`,
+          path: mainImage,
           isMain: true,
           product: { id: savedProduct.id },
         }),
 
         ...gallery.map((image) =>
           queryRunner.manager.create(ProductImage, {
-            path: `${apiUrl}${image}`,
+            path: image,
             isMain: false,
             product: { id: savedProduct.id },
           }),
@@ -141,7 +140,6 @@ export class ProductsService {
     const imagesToDeleteFromDisk: string[] = [];
 
     const { imagesToDelete, ...dataToUpdate } = updateProductDto;
-    const apiUrl = this.configService.get('API_URL') as string;
 
     const oldProduct = await this.findOne(id);
 
@@ -225,7 +223,7 @@ export class ProductsService {
         }
 
         await queryRunner.manager.save(ProductImage, {
-          path: `${apiUrl}${mainImageName}`,
+          path: mainImageName,
           isMain: true,
           product: oldProduct,
         });
@@ -244,7 +242,7 @@ export class ProductsService {
 
       if (galleryNames.length > 0) {
         const galleryEntities = galleryNames.map((name) => ({
-          path: `${apiUrl}${name}`,
+          path: name,
           isMain: false,
           product: oldProduct,
         }));
@@ -263,7 +261,7 @@ export class ProductsService {
       await queryRunner.release();
     }
 
-    await removeFileFromUrl(imagesToDeleteFromDisk);
+    await removeFilesFromNames(imagesToDeleteFromDisk);
     return 'Product Updated';
   }
 

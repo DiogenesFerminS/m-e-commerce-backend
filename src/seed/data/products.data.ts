@@ -1,7 +1,6 @@
 import { ProductCategory } from 'src/common/interfaces/product-category.enum';
 
 export const SEED_PRODUCTS = [
-  // --- GUITARS (8) ---
   {
     name: 'Fender Player Stratocaster',
     brand: 'fender',
@@ -17,7 +16,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/T3IAAeSw95tpvx2x/s-l1600.webp',
+        path: 'fender-player.png',
         isMain: true,
       },
     ],
@@ -37,7 +36,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/0zAAAeSwTvNpPd~r/s-l1600.webp',
+        path: 'gibson-les-paul.png',
         isMain: true,
       },
     ],
@@ -57,7 +56,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/VmgAAeSwdUVpuYsS/s-l1600.webp',
+        path: 'ibanez-RG550.png',
         isMain: true,
       },
     ],
@@ -77,7 +76,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/ba4AAeSwYs9psXUC/s-l1600.webp',
+        path: 'prsse24.png',
         isMain: true,
       },
     ],
@@ -96,7 +95,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/zvQAAeSwXJZpwE-l/s-l1600.webp',
+        path: 'taylor-214ce.png',
         isMain: true,
       },
     ],
@@ -116,7 +115,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/YNsAAeSwPKtpwL2X/s-l1600.webp',
+        path: 'martin-D-28.png',
         isMain: true,
       },
     ],
@@ -136,7 +135,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/4IQAAeSwpyZpvb4e/s-l1600.webp',
+        path: 'jackson-soloist.png',
         isMain: true,
       },
     ],
@@ -156,7 +155,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/NfYAAeSwTf1pkaWW/s-l1600.webp',
+        path: 'yamaha-pacifica.png',
         isMain: true,
       },
     ],
@@ -178,7 +177,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/FbkAAeSw47Fpn-mF/s-l1600.webp',
+        path: 'fenderplayerbass-precision.png',
         isMain: true,
       },
     ],
@@ -198,7 +197,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/BvAAAeSwZUtpvXgp/s-l1600.webp',
+        path: 'musicmanbass-stingray.png',
         isMain: true,
       },
     ],
@@ -218,7 +217,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/~G0AAeSwhCRpvaoI/s-l1600.webp',
+        path: 'ibanez-bass-SR300E.png',
         isMain: true,
       },
     ],
@@ -238,7 +237,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/nxgAAeSwR0tpvrhv/s-l1600.webp',
+        path: 'squier-bass-classic.png',
         isMain: true,
       },
     ],
@@ -258,7 +257,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/RekAAeSwn35pwSVV/s-l1600.webp',
+        path: 'warwick-bass.png',
         isMain: true,
       },
     ],
@@ -278,7 +277,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/zecAAeSwnrxpu8N3/s-l1600.webp',
+        path: 'yamaha-TRBX304.png',
         isMain: true,
       },
     ],
@@ -298,7 +297,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/RbwAAeSwBiFpu64W/s-l1600.webp',
+        path: 'hofner-bass.png',
         isMain: true,
       },
     ],
@@ -318,7 +317,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/FnwAAeSwFOBpurnS/s-l1600.webp',
+        path: 'rickenbacker-4003.webp',
         isMain: true,
       },
     ],
@@ -340,7 +339,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/2nkAAeSwleFpvb2p/s-l1600.webp',
+        path: 'pearl-export-drum.png',
         isMain: true,
       },
     ],
@@ -360,7 +359,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/oCQAAeSwy85ptKWE/s-l1600.webp',
+        path: 'tama-imperialstar.png',
         isMain: true,
       },
     ],
@@ -380,7 +379,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/L-MAAOSwKG9nx1CE/s-l1600.webp',
+        path: 'dw-desing.png',
         isMain: true,
       },
     ],
@@ -399,7 +398,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/yMsAAeSwyOpoeAkz/s-l1600.webp',
+        path: 'roland-TD-17KVX.png',
         isMain: true,
       },
     ],
@@ -418,7 +417,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/fLwAAeSw6QBpwT3Z/s-l1600.webp',
+        path: 'ludwig-neusonic.png',
         isMain: true,
       },
     ],
@@ -437,7 +436,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/15AAAeSwYOVpvG~-/s-l1600.webp',
+        path: 'yamaha-stage-custom-birch.png',
         isMain: true,
       },
     ],
@@ -456,7 +455,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/hWAAAeSwv6JpsEoz/s-l1600.webp',
+        path: 'gretsch-catalina-maple.png',
         isMain: true,
       },
     ],
@@ -475,7 +474,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/Nq8AAeSw6zhpwT6O/s-l1600.webp',
+        path: 'alesis-nitro-max.png',
         isMain: true,
       },
     ],
@@ -496,7 +495,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/etQAAOSwgUJgSVpB/s-l1600.webp',
+        path: 'ernie-ball-super.png',
         isMain: true,
       },
     ],
@@ -515,7 +514,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/BJUAAOSwke9kePqS/s-l1600.webp',
+        path: 'boss-TU-3-tuner-pedal.png',
         isMain: true,
       },
     ],
@@ -534,7 +533,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/ozwAAeSw6PRpvyqg/s-l1600.webp',
+        path: 'daddario-planer-waves-clave.png',
         isMain: true,
       },
     ],
@@ -553,7 +552,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/FOAAAeSwX-xoydom/s-l1600.webp',
+        path: 'dunlod-tortex.png',
         isMain: true,
       },
     ],
@@ -571,7 +570,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/B~wAAOSwdv5lgdnx/s-l1600.webp',
+        path: 'vic-firth.png',
         isMain: true,
       },
     ],
@@ -590,7 +589,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/qJMAAeSwfgRpH~Iu/s-l1600.webp',
+        path: 'focusrite.png',
         isMain: true,
       },
     ],
@@ -609,7 +608,7 @@ export const SEED_PRODUCTS = [
     ],
     images: [
       {
-        path: 'https://i.ebayimg.com/images/g/jOQAAOSwqtRjTuyO/s-l960.webp',
+        path: 'fender-strat.png',
         isMain: true,
       },
     ],

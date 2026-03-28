@@ -17,3 +17,8 @@ export {
   type UpdateAttributeDto,
   updateAttributeSchema,
 } from './attributes/update-attrubute.dto';
+
+export {
+  type SearchProductDto,
+  searchProductsSchema,
+} from './search/searchProducts.dto';

@@ -10,6 +10,12 @@ async function bootstrap() {
   const logger = new Logger();
   logger.log(`SERVER RUNNING ON PORT ${process.env.PORT ?? 3000}`);
 
+  app.enableCors({
+    origin: process.env.FRONT_URL,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   app.use(cookieParser());
 
   await app.listen(process.env.PORT ?? 3000);

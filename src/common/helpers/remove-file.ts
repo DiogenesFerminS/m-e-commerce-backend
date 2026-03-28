@@ -3,23 +3,11 @@ import path from 'path';
 import * as fs from 'fs/promises';
 import { ResponseMessageType } from '../interfaces/http.response';
 
-export const removeFileFromUrl = async (urls: string[]) => {
-  if (!urls || urls.length === 0) return;
+export const removeFilesFromNames = async (imageNames: string[]) => {
+  if (!imageNames || imageNames.length === 0) return;
 
-  const deletePromises = urls.map((url) => {
-    const parsedUrl = new URL(url);
-    const cleanPath = parsedUrl.pathname;
-
-    const fileName = cleanPath.split('/').pop();
-
-    if (!fileName) {
-      throw new BadRequestException({
-        ok: false,
-        message: ResponseMessageType.BAD_REQUEST,
-        error: 'File name not found',
-      });
-    }
-    const filePath = path.join(process.cwd(), 'uploads', 'products', fileName);
+  const deletePromises = imageNames.map((img) => {
+    const filePath = path.join(process.cwd(), 'uploads', 'products', img);
     return fs.unlink(filePath);
   });
 

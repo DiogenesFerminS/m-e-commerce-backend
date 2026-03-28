@@ -21,14 +21,12 @@ import {
   createAttributeSchema,
   createProductSchema,
   updateProductSchema,
+  searchProductsSchema,
+  type SearchProductDto,
 } from './dto';
 import { ZodValidationPipe } from 'src/common/pipes/zodValidation.pipe';
 import { type Response } from 'express';
 import { ResponseMessageType } from 'src/common/interfaces/http.response';
-import {
-  type PaginationDto,
-  paginationSchema,
-} from 'src/common/dto/pagination.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from 'src/common/helpers/multer.config';
 import * as fs from 'fs';
@@ -135,13 +133,11 @@ export class ProductsController {
 
   @Get()
   async findAll(
-    @Query(new ZodValidationPipe(paginationSchema))
-    paginationDto: PaginationDto,
+    @Query(new ZodValidationPipe(searchProductsSchema))
+    searchProductDto: SearchProductDto,
   ) {
-    const allProducts = await this.productsService.findAll(
-      paginationDto,
-      paginationDto.category,
-    );
+    const { category, ...rest } = searchProductDto;
+    const allProducts = await this.productsService.findAll(rest, category);
     return {
       ok: true,
       message: ResponseMessageType.OK,
