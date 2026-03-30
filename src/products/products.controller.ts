@@ -136,8 +136,7 @@ export class ProductsController {
     @Query(new ZodValidationPipe(searchProductsSchema))
     searchProductDto: SearchProductDto,
   ) {
-    const { category, ...rest } = searchProductDto;
-    const allProducts = await this.productsService.findAll(rest, category);
+    const allProducts = await this.productsService.findAll(searchProductDto);
     return {
       ok: true,
       message: ResponseMessageType.OK,

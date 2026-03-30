@@ -8,12 +8,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { handleError } from 'src/common/helpers/handlers-errors';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ResponseMessageType } from 'src/common/interfaces/http.response';
 import {
   type UpdateProductDto,
   type CreateProductDto,
   CreateAttributeDto,
+  SearchProductDto,
 } from './dto';
 import { ProductImage } from './entities/productImage.entity';
 import { ConfigService } from '@nestjs/config';
@@ -21,6 +21,7 @@ import { Envs } from 'src/common/schemas/envs.schemas';
 import { removeFilesFromNames } from 'src/common/helpers/remove-file';
 import { ProductAttribute } from './entities/productAttribute.entity';
 import { isDatabaseError } from 'src/common/helpers/is-database-error';
+import { PriceSort } from 'src/common/interfaces/price-sort.enum';
 
 @Injectable()
 export class ProductsService {
@@ -94,24 +95,45 @@ export class ProductsService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto, category: string | undefined) {
-    const { limit, page } = paginationDto;
+  async findAll(searchProductDto: SearchProductDto) {
+    const { limit, page, category, sort, brand, type } = searchProductDto;
     const skip = (page - 1) * limit;
-
     const queryBuilder = this.productsRepository
       .createQueryBuilder('products')
       .leftJoinAndSelect('products.images', 'images')
       .leftJoinAndSelect('products.attributes', 'attributes');
 
+    const brandsBuilder =
+      this.productsRepository.createQueryBuilder('products');
+
     if (category) {
       queryBuilder.andWhere('products.category = :category', { category });
+      brandsBuilder.andWhere('products.category = :category', { category });
     }
 
-    queryBuilder.take(limit).skip(skip).orderBy('products.createdAt', 'DESC');
+    if (brand) {
+      queryBuilder.andWhere('products.brand = :brand', { brand });
+      brandsBuilder.andWhere('products.brand = :brand', { brand });
+    }
 
-    const [products, total] = await queryBuilder.getManyAndCount();
+    //TODO: TYPE FILTER
+
+    if (sort) {
+      const order = sort === PriceSort.PRICE_ASC ? 'ASC' : 'DESC';
+      queryBuilder.orderBy('products.price', order);
+    } else {
+      queryBuilder.take(limit).skip(skip).orderBy('products.createdAt', 'DESC');
+    }
+
+    const [[products, total], brands] = await Promise.all([
+      queryBuilder.getManyAndCount(),
+      brandsBuilder.select('products.brand').distinct(true).getMany(),
+    ]);
+
+    const cleanBrands = brands.map((brand) => brand.brand);
 
     return {
+      brands: cleanBrands,
       products: products,
       meta: {
         total: total,
